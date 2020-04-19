@@ -23,26 +23,21 @@ import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.util.Log
-import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.SkuDetails
-import com.android.billingclient.api.SkuDetailsParams
-import com.android.billingclient.api.SkuDetailsResponseListener
+import com.android.billingclient.api.*
 import com.example.subscriptions.Constants
 import com.example.subscriptions.ui.SingleLiveEvent
 
+/**
+ * We don't implement ConsumeResponseListener because this app is about subscriptions only. And
+ * subscriptions cannot be consumed.
+ */
 class BillingClientLifecycle private constructor(
         private val app: Application
 ) : LifecycleObserver, PurchasesUpdatedListener, BillingClientStateListener,
         SkuDetailsResponseListener {
 
     /**
-     * The purchase event is observable. Only one oberver will be notified.
+     * The purchase event is observable. Only one observer will be notified.
      */
     val purchaseUpdateEvent = SingleLiveEvent<List<Purchase>>()
 
@@ -60,7 +55,7 @@ class BillingClientLifecycle private constructor(
     /**
      * Instantiate a new BillingClient instance.
      */
-    lateinit private var billingClient: BillingClient
+    private lateinit var billingClient: BillingClient
 
     companion object {
         private const val TAG = "BillingLifecycle"
