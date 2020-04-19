@@ -64,29 +64,29 @@ class DataRepository private constructor(
         // Update content from the web.
         // We are using a MediatorLiveData so that we can clear the data immediately
         // when the subscription changes.
-        basicContent.addSource(webDataSource.basicContent, {
+        basicContent.addSource(webDataSource.basicContent) {
             basicContent.postValue(it)
-        })
-        premiumContent.addSource(webDataSource.premiumContent, {
+        }
+        premiumContent.addSource(webDataSource.premiumContent) {
             premiumContent.postValue(it)
-        })
+        }
         // Database changes are observed by the ViewModel.
-        subscriptions.addSource(localDataSource.subscriptions, {
+        subscriptions.addSource(localDataSource.subscriptions) {
             Log.d("Repository", "Subscriptions updated: ${it?.size}")
             subscriptions.postValue(it)
-        })
+        }
         // Observed network changes are store in the database.
         // The database changes will propagate to the ViewModel.
         // We could write different logic to ensure that the network call completes when
         // the UI component is inactive.
-        subscriptions.addSource(webDataSource.subscriptions, {
+        subscriptions.addSource(webDataSource.subscriptions) {
             updateSubscriptionsFromNetwork(it)
-        })
+        }
         // When the list of purchases changes, we need to update the subscription status
         // to indicate whether the subscription is local or not. It is local if the
         // the Google Play Billing APIs return a Purchase record for the SKU. It is not
         // local if there is no record of the subscription on the device.
-        subscriptions.addSource(billingClientLifecycle.purchases, {
+        subscriptions.addSource(billingClientLifecycle.purchases) {
             // We only need to update the database if the isLocalPurchase field needs to change.
             val purchases = it
             subscriptions.value?.let {
@@ -96,7 +96,7 @@ class DataRepository private constructor(
                     localDataSource.updateSubscriptions(subscriptions)
                 }
             }
-        })
+        }
     }
 
     fun updateSubscriptionsFromNetwork(remoteSubscriptions: List<SubscriptionStatus>?) {
