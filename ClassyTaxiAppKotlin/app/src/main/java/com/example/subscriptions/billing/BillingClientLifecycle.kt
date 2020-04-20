@@ -24,6 +24,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.util.Log
 import com.android.billingclient.api.*
+import com.android.billingclient.api.BillingClient.*
 import com.example.subscriptions.Constants
 import com.example.subscriptions.ui.SingleLiveEvent
 
@@ -49,6 +50,9 @@ class BillingClientLifecycle private constructor(
 
     /**
      * SkuDetails for all known SKUs.
+     * Represents a map of productId to SkuDetails. productId is the sku field from SkuDetails.
+     * Product ID is a unique, human readable ID for your product.
+     * Product IDs are also called SKUs in the Google Play Billing Library.
      */
     val skusWithSkuDetails = MutableLiveData<Map<String, SkuDetails>>()
 
@@ -75,7 +79,7 @@ class BillingClientLifecycle private constructor(
         // Create a new BillingClient in onCreate().
         // Since the BillingClient can only be used once, we need to create a new instance
         // after ending the previous connection to the Google Play Store in onDestroy().
-        billingClient = BillingClient.newBuilder(app.applicationContext)
+        billingClient = newBuilder(app.applicationContext)
                 .setListener(this)
                 .enablePendingPurchases() // Not used for subscriptions. Note that if you do not call enablePendingPurchases(), you cannot instantiate the Google Play Billing Library.
                 .build()
@@ -100,7 +104,7 @@ class BillingClientLifecycle private constructor(
         val responseCode = billingResult.responseCode
         val debugMessage = billingResult.debugMessage
         Log.d(TAG, "onBillingSetupFinished: $responseCode $debugMessage")
-        if (responseCode == BillingClient.BillingResponseCode.OK) {
+        if (responseCode == BillingResponseCode.OK) {
             // The billing client is ready. You can query purchases here.
             querySkuDetails()
             queryPurchases()
@@ -114,13 +118,13 @@ class BillingClientLifecycle private constructor(
     }
 
     /**
-     * In order to make purchasese, you need the [SkuDetails] for the item or subscription.
+     * In order to make purchases, you need the [SkuDetails] for the item or subscription.
      * This is an asynchronous call that will receive a result in [onSkuDetailsResponse].
      */
     fun querySkuDetails() {
         Log.d(TAG, "querySkuDetails")
         val params = SkuDetailsParams.newBuilder()
-                .setType(BillingClient.SkuType.SUBS)
+                .setType(SkuType.SUBS)
                 .setSkusList(listOf(
                         Constants.BASIC_SKU,
                         Constants.PREMIUM_SKU
@@ -149,7 +153,7 @@ class BillingClientLifecycle private constructor(
         val responseCode = billingResult.responseCode
         val debugMessage = billingResult.debugMessage
         when (responseCode) {
-            BillingClient.BillingResponseCode.OK -> {
+            BillingResponseCode.OK -> {
                 Log.i(TAG, "onSkuDetailsResponse: $responseCode $debugMessage")
                 if (skuDetailsList == null) {
                     Log.w(TAG, "onSkuDetailsResponse: null SkuDetails list")
@@ -163,18 +167,18 @@ class BillingClientLifecycle private constructor(
                         Log.i(TAG, "onSkuDetailsResponse: count ${postedValue.size}")
                     })
             }
-            BillingClient.BillingResponseCode.SERVICE_DISCONNECTED,
-            BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE,
-            BillingClient.BillingResponseCode.BILLING_UNAVAILABLE,
-            BillingClient.BillingResponseCode.ITEM_UNAVAILABLE,
-            BillingClient.BillingResponseCode.DEVELOPER_ERROR,
-            BillingClient.BillingResponseCode.ERROR -> {
+            BillingResponseCode.SERVICE_DISCONNECTED,
+            BillingResponseCode.SERVICE_UNAVAILABLE,
+            BillingResponseCode.BILLING_UNAVAILABLE,
+            BillingResponseCode.ITEM_UNAVAILABLE,
+            BillingResponseCode.DEVELOPER_ERROR,
+            BillingResponseCode.ERROR -> {
                 Log.e(TAG, "onSkuDetailsResponse: $responseCode $debugMessage")
             }
-            BillingClient.BillingResponseCode.USER_CANCELED,
-            BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED,
-            BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED,
-            BillingClient.BillingResponseCode.ITEM_NOT_OWNED -> {
+            BillingResponseCode.USER_CANCELED,
+            BillingResponseCode.FEATURE_NOT_SUPPORTED,
+            BillingResponseCode.ITEM_ALREADY_OWNED,
+            BillingResponseCode.ITEM_NOT_OWNED -> {
                 // These response codes are not expected.
                 Log.wtf(TAG, "onSkuDetailsResponse: $responseCode $debugMessage")
             }
@@ -192,7 +196,7 @@ class BillingClientLifecycle private constructor(
             Log.e(TAG, "queryPurchases: BillingClient is not ready")
         }
         Log.d(TAG, "queryPurchases: SUBS")
-        val result = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
+        val result = billingClient.queryPurchases(SkuType.SUBS)
         if (result == null) {
             Log.i(TAG, "queryPurchases: null purchase result")
             processPurchases(null)
@@ -221,7 +225,7 @@ class BillingClientLifecycle private constructor(
         val debugMessage = billingResult.debugMessage
         Log.d(TAG, "onPurchasesUpdated: $responseCode $debugMessage")
         when (responseCode) {
-            BillingClient.BillingResponseCode.OK -> {
+            BillingResponseCode.OK -> {
                 if (purchases == null) {
                     Log.d(TAG, "onPurchasesUpdated: null purchase list")
                     processPurchases(null)
@@ -229,13 +233,13 @@ class BillingClientLifecycle private constructor(
                     processPurchases(purchases)
                 }
             }
-            BillingClient.BillingResponseCode.USER_CANCELED -> {
+            BillingResponseCode.USER_CANCELED -> {
                 Log.i(TAG, "onPurchasesUpdated: User canceled the purchase")
             }
-            BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
+            BillingResponseCode.ITEM_ALREADY_OWNED -> {
                 Log.i(TAG, "onPurchasesUpdated: The user already owns this item")
             }
-            BillingClient.BillingResponseCode.DEVELOPER_ERROR -> {
+            BillingResponseCode.DEVELOPER_ERROR -> {
                 Log.e(TAG, "onPurchasesUpdated: Developer error means that Google Play " +
                         "does not recognize the configuration. If you are just getting started, " +
                         "make sure you have configured the application correctly in the " +
@@ -274,11 +278,11 @@ class BillingClientLifecycle private constructor(
     }
 
     /**
-     * Log the number of purchases that are acknowledge and not acknowledged.
+     * Log the number of purchases that are acknowledged and not acknowledged.
      *
      * https://developer.android.com/google/play/billing/billing_library_releases_notes#2_0_acknowledge
      *
-     * When the purchase is first received, it will not be acknowledge.
+     * When the purchase is first received, it will not be acknowledged.
      * This application sends the purchase token to the server for registration. After the
      * purchase token is registered to an account, the Android app acknowledges the purchase token.
      * The next time the purchase list is updated, it will contain acknowledged purchases.
@@ -347,5 +351,4 @@ class BillingClientLifecycle private constructor(
             Log.d(TAG, "acknowledgePurchase: $responseCode $debugMessage")
         }
     }
-
 }

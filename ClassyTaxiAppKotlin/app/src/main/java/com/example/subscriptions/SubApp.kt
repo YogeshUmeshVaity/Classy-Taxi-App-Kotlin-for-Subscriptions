@@ -51,10 +51,12 @@ class SubApp : Application() {
     private val webDataSource: WebDataSource
         get() = WebDataSource.getInstance(executors, serverFunctions)
 
+    /**
+     * It's initialized here, so that it can be used anywhere in the app.
+     */
     val billingClientLifecycle: BillingClientLifecycle
         get() = BillingClientLifecycle.getInstance(this)
 
     val repository: DataRepository
         get() = DataRepository.getInstance(localDataSource, webDataSource, billingClientLifecycle)
-
 }
