@@ -21,6 +21,10 @@ import com.example.subscriptions.data.SubscriptionStatus
 import com.example.subscriptions.data.disk.db.AppDatabase
 import java.util.concurrent.Executor
 
+/**
+ * This class is just an abstraction over AppDatabase. Provides functions for retrieving, updating
+ * and deleting subscriptions from local database.
+ */
 class LocalDataSource private constructor(
         private val executor: Executor,
         private val appDatabase: AppDatabase
@@ -32,14 +36,14 @@ class LocalDataSource private constructor(
     val subscriptions = appDatabase.subscriptionStatusDao().getAll()
 
     fun updateSubscriptions(subscriptions: List<SubscriptionStatus>) {
-        executor.execute({
+        executor.execute {
             appDatabase.runInTransaction {
                 // Delete existing subscriptions.
                 appDatabase.subscriptionStatusDao().deleteAll()
                 // Put new subscriptions data into localDataSource.
                 appDatabase.subscriptionStatusDao().insertAll(subscriptions)
             }
-        })
+        }
     }
 
     /**
