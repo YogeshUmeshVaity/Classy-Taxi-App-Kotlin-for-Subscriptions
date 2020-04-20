@@ -77,7 +77,7 @@ class BillingClientLifecycle private constructor(
         // after ending the previous connection to the Google Play Store in onDestroy().
         billingClient = BillingClient.newBuilder(app.applicationContext)
                 .setListener(this)
-                .enablePendingPurchases() // Not used for subscriptions.
+                .enablePendingPurchases() // Not used for subscriptions. Note that if you do not call enablePendingPurchases(), you cannot instantiate the Google Play Billing Library.
                 .build()
         if (!billingClient.isReady) {
             Log.d(TAG, "BillingClient: Start connection...")
