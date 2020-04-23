@@ -162,7 +162,7 @@ export default class PurchaseManager {
 
   /*
    * There are situations that a subscription is replaced by another subscription.
-   * For example, an user signs up for a subscription (tokenA), cancel its and re-signups (tokenB)
+   * For example, an user signs up for a subscription (tokenA), cancels it and re-signups (tokenB)
    * We must disable the subscription linked to tokenA because it has been replaced by tokenB.
    * If failed to do so, there's chance that a malicious user can have a single purchase registered to multiple user accounts.
    * 

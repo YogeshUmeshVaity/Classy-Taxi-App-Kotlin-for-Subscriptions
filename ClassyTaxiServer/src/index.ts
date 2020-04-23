@@ -22,7 +22,7 @@ import { subscription_register, subscription_status, subscription_transfer, real
 import { instanceId_register, instanceId_unregister } from './controller/functions/instance_id'
 
 /*
- * This file is the main entrace for Cloud Functions for Firebase.
+ * This file is the main entrance for Cloud Functions for Firebase.
  * It exposes functions that will be deployed to the backend
  */
 

@@ -21,12 +21,12 @@ const BASIC_PLAN_SKU = functions.config().app.basic_plan_sku;
 const PREMIUM_PLAN_SKU = functions.config().app.premium_plan_sku;
 
 /* This file contains implementation of functions related to content serving.
- * Each functions checks if the active user have access to the subscribed content,
+ * Each function checks if the active user has access to the subscribed content,
  * and then returns the content to client app.
  */
 
 /* Callable that serves basic content to the client
- */
+*/
 export const content_basic = functions.https.onCall(async (data, context) => {
   verifyAuthentication(context);
   await verifySubscriptionOwnershipAsync(context, [BASIC_PLAN_SKU, PREMIUM_PLAN_SKU]);

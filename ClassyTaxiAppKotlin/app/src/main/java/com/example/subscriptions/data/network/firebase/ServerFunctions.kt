@@ -68,12 +68,12 @@ interface ServerFunctions {
     fun updateSubscriptionStatus()
 
     /**
-     * Register a subscription with the server and posts successful results to [subscriptions].
+     * Registers a subscription with the server and posts successful results to [subscriptions].
      */
     fun registerSubscription(sku: String, purchaseToken: String)
 
     /**
-     * Transfer subscription to this account posts successful results to [subscriptions].
+     * Transfers subscription to this account and posts successful results to [subscriptions].
      */
     fun transferSubscription(sku: String, purchaseToken: String)
 
