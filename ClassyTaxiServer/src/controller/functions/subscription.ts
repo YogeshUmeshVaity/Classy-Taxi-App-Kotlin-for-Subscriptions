@@ -23,8 +23,8 @@ import { SubscriptionStatus } from '../../model/SubscriptionStatus';
 /* This file contains implementation of functions related to linking subscription purchase with user account
  */
 
-/* Register a subscription purchased in Android app via Google Play Billing to an user.
- * It only works with brand-new subscription purchases, which have not been registered to other users before
+/* Register a subscription purchased in Android app via Google Play Billing to a user.
+ * It only works with brand-new subscription purchases, which have not been registered to other users before.
  */
 export const subscription_register = functions.https.onCall(async (data, context) => {
   verifyAuthentication(context);
@@ -124,7 +124,7 @@ export const realtime_notification_listener = functions.pubsub.topic('play-subs'
   }
 })
 
-// Util method to get a list of subscriptions belong to an user, in the format that can be returned to client app
+// Util method to get a list of subscriptions belong to a user, in the format that can be returned to client app
 // It also handles library internal error and convert it to an HTTP error to return to client.
 async function getSubscriptionsResponseObject(userId: string): Promise<Object> {
   try {

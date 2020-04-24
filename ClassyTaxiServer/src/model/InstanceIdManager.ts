@@ -28,7 +28,7 @@ export class InstanceIdManager {
     this.usersCollectionReference = firebaseApp.firestore().collection(FIRESTORE_USERS_COLLECTION)
   }
 
-  // Register a device instanceId to an user
+  // Register a device instanceId to a user
   async registerInstanceId(userId: string, instanceId: string): Promise<void> {
     // STEP 1: Fetch the user document from Firestore
     const userDocument = await this.usersCollectionReference.doc(userId).get();
@@ -43,19 +43,19 @@ export class InstanceIdManager {
         await userDocument.ref.update({ fcmTokens: tokens });
       }
     } else {
-      // STEP 2b: If the document doesn't exist, create a new one with the Instance ID
+      // STEP 2b: If the document doesn't exist, create a new one with the Instance ID.
       const tokens = [instanceId];
       await userDocument.ref.set({ fcmTokens: tokens });
     }
   }
 
-  /* Unregister a device instanceId from an user
+  /* Unregister a device instanceId from a user.
    */
   async unregisterInstanceId(userId:string, instanceId: string): Promise<void> {
     // STEP 1: Fetch the user document from Firestore
     const userDocument = await this.usersCollectionReference.doc(userId).get();
     if (userDocument.exists) {
-      // STEP 2: If the document exists, remove the Instance ID to the user's list of FCM tokens
+      // STEP 2: If the document exists, remove the Instance ID from the user's list of FCM tokens
       const tokens: Array<string> = userDocument.data().fcmTokens;
       if (tokens) {
         const newTokens = tokens.filter(token => token !== instanceId);
@@ -63,20 +63,20 @@ export class InstanceIdManager {
           await userDocument.ref.update({ fcmTokens: newTokens });
         }
       } else {
-        // The user doesn't exist, which is an unexpected situation
-        // However, we don't need to do handle this case, so just log an warning and move on
+        // The user doesn't exist, which is an unexpected situation.
+        // However, we don't need to handle this case, so just log a warning and move on.
         console.warn('Attempted to unregister InstanceId that does not belong to the user. userId =', userId);  
       }
     } else {
-      // The user doesn't exist, which is an unexpected situation
-      // However, we don't need to do handle this case, so just log an warning and move on
+      // The user doesn't exist, which is an unexpected situation.
+      // However, we don't need do handle this case, so just log a warning and move on.
       console.warn('Attempted to unregister InstanceId of an non-existent user. userId =', userId);
       return;
     }
   }
 
-  /* Get a list of instanceIds that are currently registerd to an user.
-   * It can be used to send push notifications to all devices owned by the user
+  /* Get a list of instanceIds that are currently registerd to a user.
+   * It can be used to send push notifications to all devices owned by the user.
    */
   async getInstanceIds(userId: string): Promise<Array<string>> {
     // STEP 1: Fetch the user document from Firestore

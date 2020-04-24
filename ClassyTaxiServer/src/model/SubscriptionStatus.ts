@@ -17,8 +17,8 @@
 import * as PlayBilling from "../play-billing";
 
 /* SubscriptionStatus is part of Model layer.
- * It's an entity represents a subcription purchase from client app's perspective
- * It wraps the more general purpose SubscriptionPurchase class of Play Billing reusable component
+ * It's an entity that represents a subcription purchase from client app's perspective
+ * It wraps the more general purpose SubscriptionPurchase class of Play Billing reusable component.
  */
 export class SubscriptionStatus {
   sku: string;

@@ -40,14 +40,14 @@ export default class PlayBilling {
   }
 
   /*
-   * A class to access user-purchase linking features
+   * A class to access user-purchase linking features.
    */
   purchases(): PurchaseManager {
     return this.purchaseManager;
   }
 
   /*
-   * A class to lookup purchases registered to a particular user
+   * A class to lookup purchases registered to a particular user.
    */
   users(): UserManager {
     return this.userManager;

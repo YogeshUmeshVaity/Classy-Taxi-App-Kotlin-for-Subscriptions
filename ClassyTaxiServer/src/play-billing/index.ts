@@ -15,7 +15,7 @@
  */
 
 /* 
- * This is a reusable component (the library) that directly manage purchases made via Google Play Billing.
+ * This is a reusable component (the library) that directly manages purchases made via Google Play Billing.
  * It does several things:
  *  - Manage relation between purchases and users (i.e. which user owns which purchase)
  *  - Manage the lifecycle of recurring subscription purchases (renewal, expiry, grace period, account hold etc.)

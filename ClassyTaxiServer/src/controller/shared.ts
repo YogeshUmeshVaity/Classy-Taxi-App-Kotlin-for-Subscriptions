@@ -34,8 +34,8 @@ export const playBilling = PlayBilling.fromServiceAccount(serviceAccountPlay, fi
 export const instanceIdManager = new InstanceIdManager(firebase.app());
 export const contentManager = new ContentManager();
 
-// Shared verification functions
-// Verify if the user making the call has signed in
+// Shared verification functions.
+// Verify if the user making the call has signed in.
 export function verifyAuthentication(context: functions.https.CallableContext) {
   if (!context.auth)
     throw new functions.https.HttpsError('unauthenticated', 'Unauthorized Access');

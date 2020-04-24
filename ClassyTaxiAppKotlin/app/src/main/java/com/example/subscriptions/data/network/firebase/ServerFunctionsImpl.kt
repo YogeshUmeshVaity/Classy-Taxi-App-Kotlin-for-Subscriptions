@@ -273,7 +273,7 @@ class ServerFunctionsImpl : ServerFunctions {
     /**
      * Insert or update the subscription to the list of existing subscriptions.
      *
-     * If none of the existing subscriptions have a SKU that matches, insert this SKU.
+     * If none of the existing subscriptions have an SKU that matches, insert this SKU.
      * If a subscription exists with the matching SKU, the output list will contain the new
      * subscription instead of the old subscription.
      */

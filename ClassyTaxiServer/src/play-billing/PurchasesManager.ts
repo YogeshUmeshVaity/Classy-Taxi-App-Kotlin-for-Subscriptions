@@ -89,7 +89,7 @@ export default class PurchaseManager {
    * Query a subscription purchase by its package name, product Id (sku) and purchase token.
    * The method queries Google Play Developer API to get the latest status of the purchase,
    * then merge it with purchase ownership info stored in the library's managed Firestore database,
-   * then returns the merge information as a SubscriptionPurchase to its caller.
+   * then returns the merged information as a SubscriptionPurchase to its caller.
    */ 
   querySubscriptionPurchase(packageName: string, sku: string, purchaseToken: string): Promise<SubscriptionPurchase> {
     return this.querySubscriptionPurchaseWithTrigger(packageName, sku, purchaseToken);

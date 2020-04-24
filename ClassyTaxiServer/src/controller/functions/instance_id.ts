@@ -21,7 +21,7 @@ import { verifyAuthentication, verifyInstanceIdToken, instanceIdManager } from '
  * which are used to send push notifications to client devices.
  */
 
-/* Register a device instanceId to an user. This is called when the user sign-in in a device
+/* Register a device instanceId to an user. This is called when the user signs-in to a device.
  */
 export const instanceId_register = functions.https.onCall(async (data, context) => {
   verifyAuthentication(context);
@@ -39,7 +39,7 @@ export const instanceId_register = functions.https.onCall(async (data, context) 
   }
 })
 
-/* Unregister a device instanceId to an user. This is called when the user sign-out in a device
+/* Unregister a device instanceId to an user. This is called when the user signs-out of a device
  */
 export const instanceId_unregister = functions.https.onCall(async (data, context) => {
   verifyAuthentication(context);
