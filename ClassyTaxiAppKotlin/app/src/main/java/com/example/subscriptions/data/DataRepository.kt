@@ -75,7 +75,7 @@ class DataRepository private constructor(
             Log.d("Repository", "Subscriptions updated: ${it?.size}")
             subscriptions.postValue(it)
         }
-        // Observed network changes are store in the database.
+        // Observed network changes are stored in the database.
         // The database changes will propagate to the ViewModel.
         // We could write different logic to ensure that the network call completes when
         // the UI component is inactive.
@@ -99,6 +99,13 @@ class DataRepository private constructor(
         }
     }
 
+    /**
+     * Merges the subscriptions from the billingClient, server and local database.
+     * Acknowledges subscriptions that have been registered by the server.
+     * Stores the merged subscriptions on the local database.
+     * Sets flags for the active subscriptions, so, we'll know what features to make available
+     * for the user.
+     */
     fun updateSubscriptionsFromNetwork(remoteSubscriptions: List<SubscriptionStatus>?) {
         val oldSubscriptions = subscriptions.value
         val purchases = billingClientLifecycle.purchases.value
@@ -191,7 +198,7 @@ class DataRepository private constructor(
                                     purchase.purchaseToken == oldSubscription.purchaseToken) {
                                 // The old subscription that was already owned subscription should
                                 // be added to the new subscriptions.
-                                // Look through the new subscriptions to see if it is there.
+                                // Look through the new subscriptions to see if it is already there.
                                 var foundNewSubscription = false
                                 newSubscriptions?.let {
                                     for (newSubscription in it) {
@@ -200,6 +207,7 @@ class DataRepository private constructor(
                                         }
                                     }
                                 }
+                                // If it is not there, add it.
                                 if (!foundNewSubscription) {
                                     // The old subscription should be added to the output.
                                     // It matches a local purchase.
@@ -230,6 +238,10 @@ class DataRepository private constructor(
                     for (purchase in it) {
                         if (subscription.sku == purchase.sku) {
                             isLocalPurchase = true
+                            // sku will be same but purchaseToken may not be same, since
+                            // we remove re-singed up purchase tokens on the server to prevent
+                            // the re-sign up exploit. So we copy the new purchase taken for same
+                            // sku.
                             purchaseToken = purchase.purchaseToken
                         }
                     }
