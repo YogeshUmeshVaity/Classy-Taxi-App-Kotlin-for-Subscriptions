@@ -23,7 +23,7 @@ import { instanceId_register, instanceId_unregister } from './controller/functio
 
 /*
  * This file is the main entrance for Cloud Functions for Firebase.
- * It exposes functions that will be deployed to the backend
+ * It exposes functions that will be deployed to the backend.
  */
 
 // This is a trick to improve performance when there are many functions, 

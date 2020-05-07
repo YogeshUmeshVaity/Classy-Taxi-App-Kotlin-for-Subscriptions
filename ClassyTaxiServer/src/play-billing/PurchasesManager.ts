@@ -134,9 +134,10 @@ export default class PurchaseManager {
       const firestoreObject = subscriptionPurchase.toFirestoreObject();
 
       if (purchaseRecordDoc.exists) {
-        // STEP 3a. We has this purchase cached in Firstore. Update our cache with the newly received response from Google Play Developer API
+        // STEP 3a. We have this purchase cached in Firstore. Update our cache with the newly received response from Google Play Developer API
         await purchaseRecordDoc.ref.update(firestoreObject);
 
+        // Even though we update the purchase record above, we are merging again for returning purpose.
         // STEP 4a. Merge other fields of our purchase record in Firestore (such as userId) with our SubscriptionPurchase object and return to caller.
         mergePurchaseWithFirestorePurchaseRecord(subscriptionPurchase, purchaseRecordDoc.data());
         return subscriptionPurchase;
@@ -162,7 +163,7 @@ export default class PurchaseManager {
 
   /*
    * There are situations that a subscription is replaced by another subscription.
-   * For example, an user signs up for a subscription (tokenA), cancels it and re-signups (tokenB)
+   * For example, a user signs up for a subscription (tokenA), cancels it and re-signups (tokenB)
    * We must disable the subscription linked to tokenA because it has been replaced by tokenB.
    * If failed to do so, there's chance that a malicious user can have a single purchase registered to multiple user accounts.
    * 

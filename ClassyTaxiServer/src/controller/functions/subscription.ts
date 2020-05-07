@@ -92,7 +92,7 @@ export const subscription_transfer = functions.https.onCall(async (data, context
 
 /* Returns a list of active subscriptions and those under Account Hold.
  * Subscriptions in Account Hold can still be recovered, 
- * so it's useful that client app know about them and show an appropriate message to the user.
+ * so it's useful that client app knows about them and shows an appropriate message to the user.
  */
 export const subscription_status = functions.https.onCall((data, context) => {
   verifyAuthentication(context);

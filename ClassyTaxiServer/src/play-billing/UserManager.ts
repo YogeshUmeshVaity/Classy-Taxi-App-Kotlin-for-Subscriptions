@@ -53,17 +53,17 @@ export default class UserManager {
         query = query.where('packageName', '==', packageName);
       }
 
-      // Do fetch possibly active subscription from Firestore
+      // Fetch possibly active subscriptions from Firestore.
       const queryResult = await query.get();
 
-      // Loop through these subscriptions and filter those that are indeed active
+      // Loop through these subscriptions and filter those that are indeed active.
       for (const purchaseRecordSnapshot of queryResult.docs) {
         let purchase: SubscriptionPurchase = SubscriptionPurchaseImpl.fromFirestoreObject(purchaseRecordSnapshot.data())
 
         if (!purchase.isEntitlementActive() && !purchase.isAccountHold()) {
-          // If a subscription purchase record in Firestore indicates says that it has expired,
+          // If a subscription purchase record in Firestore indicates that it has expired,
           // and we haven't confirmed that it's in Account Hold,
-          // and we know that its status could have been changed since we last fetch its details,
+          // and we know that its status could have been changed since the last fetch of its details,
           // then we should query Play Developer API to get its latest status
           console.log('Updating cached purchase record for token = ', purchase.purchaseToken);
           purchase = await this.purchaseManager.querySubscriptionPurchase(purchase.packageName, purchase.sku, purchase.purchaseToken);
