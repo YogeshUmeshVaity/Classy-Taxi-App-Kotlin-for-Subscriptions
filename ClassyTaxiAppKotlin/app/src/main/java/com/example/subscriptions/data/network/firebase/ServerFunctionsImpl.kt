@@ -82,11 +82,15 @@ class ServerFunctionsImpl : ServerFunctions {
 
     /**
      * The basic content URL.
+     * We don't store url on the device for the safety of the content. We store it on the server.
+     * We fetch it, only if the user has active subscription. This LiveData represents that url.
      */
     override val basicContent = MutableLiveData<ContentResource>()
 
     /**
      * The premium content URL.
+     * We don't store url on the device for the safety of the content. We store it on the server.
+     * We fetch it, only if the user has active subscription. This LiveData represents that url.
      */
     override val premiumContent = MutableLiveData<ContentResource>()
 
@@ -186,6 +190,27 @@ class ServerFunctionsImpl : ServerFunctions {
 
     /**
      * Fetches subscription data from the server and posts successful results to [subscriptions].
+     * Server info: When you make this call, what happens on server side?
+     * 1. Server verifies authentication to check if the use making this call is signed in.
+     *    if the authentication fails, server throws error: Unauthorised Access.
+     * 2. Server queries its database for current subscriptions(purchases).
+     * 3. Iterates through every subscription.
+     *    a. If any subscription's entitlement is not active and it's not on account hold,
+     *       then it queries the Google Play Developer API for latest status of that subscription.
+     *       And it merges it with subscription ownership information stored in server database.
+     *       After doing this, the server also checks the linkedPurchaseToken field of this
+     *       subscription, if this linkedPurchaseToken field is not empty, then this is resigned-up
+     *       subscription(user canceled the subscription and subscribed again before the expiry).
+     *       Medium: https://medium.com/androiddevelopers/implementing-linkedpurchasetoken-correctly-to-prevent-duplicate-subscriptions-82dfbf7167da
+     *       More info: https://developers.google.com/android-publisher/api-ref/purchases/subscriptions
+     *       SO: https://stackoverflow.com/questions/51808268/google-renewable-subscriptions-abuse
+     *       This situation can abused by the user by offering free subscriptions to other accounts.
+     *       So, we need to disable the previous subscription whose purchaseToken is stored in
+     *       current subscription's linkedPurchaseToken field. We do this recursively until we find
+     *       an empty linkedPurchaseToken field.
+     *    b. If the subscription's entitlement is active or it's on account hold, the server adds
+     *       it to the list of subscriptions to be returned.
+     * 4. It returns that subscriptions list here.
      */
     override fun updateSubscriptionStatus() {
         incrementRequestCount()
@@ -195,6 +220,12 @@ class ServerFunctionsImpl : ServerFunctions {
                 .call(null)
                 .addOnCompleteListener { task ->
                     decrementRequestCount()
+                    // Task has TResult and TResult has data, this data is root Java Object.
+                    // This Object is same that's returned from the server in the form of Javascript
+                    // object { subscriptions: subscriptionStatus[] }
+                    // We cast it to a Map here. So, it becomes a map with just a single element.
+                    // That element's key is "subscriptions" and value is subscriptionStatus[](Any).
+                    // See documentation of listFromMap() method for more info.
                     if (task.isSuccessful) {
                         Log.i(TAG, "Subscription status update successful")
                         val result = (task.result?.data as? Map<String, Any>)?.let {

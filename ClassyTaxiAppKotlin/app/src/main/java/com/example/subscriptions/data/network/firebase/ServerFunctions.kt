@@ -42,11 +42,15 @@ interface ServerFunctions {
 
     /**
      * The basic content URL.
+     * We don't store url on the device for the safety of the content. We store it on the server.
+     * We fetch it, only if the user has active subscription. This LiveData represents that url.
      */
     val basicContent: LiveData<ContentResource>
 
     /**
      * The premium content URL.
+     * We don't store url on the device for the safety of the content. We store it on the server.
+     * We fetch it, only if the user has active subscription. This LiveData represents that url.
      */
     val premiumContent: LiveData<ContentResource>
 
