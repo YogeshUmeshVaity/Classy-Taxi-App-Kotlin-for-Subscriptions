@@ -62,6 +62,19 @@ data class SubscriptionStatus (
 
         /**
          * Parse subscription data from Map and return null if data is not valid.
+         * The Map passed to this function contains just a single element.
+         * That element's key is "subscriptions" and value is subscriptionStatus[](Any).
+         * So, this map's single value contains other maps.
+         * For example:
+         * {
+         *     subscriptions: subscriptionStatus [
+         *                                          { sku: "premium" },
+         *                                          { purchaseToken: "1233456" },
+         *                                          { isEntitlementActive: "true" }'
+         *                                          { willRenew: "true" } ... and so on.
+         *                                       ]
+         * }
+         * So, we cast this subscriptionStatus[] array that is Any, to an ArrayList of map.
          */
         fun listFromMap(map: Map<String, Any>): List<SubscriptionStatus>? {
             val subscriptions = ArrayList<SubscriptionStatus>()

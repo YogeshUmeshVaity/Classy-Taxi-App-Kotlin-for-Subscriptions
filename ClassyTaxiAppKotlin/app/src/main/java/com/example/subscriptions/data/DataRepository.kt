@@ -196,7 +196,7 @@ class DataRepository private constructor(
                         for (purchase in purchases) {
                             if (purchase.sku == oldSubscription.sku &&
                                     purchase.purchaseToken == oldSubscription.purchaseToken) {
-                                // The old subscription that was already owned subscription should
+                                // The old subscription that was already owned should
                                 // be added to the new subscriptions.
                                 // Look through the new subscriptions to see if it is already there.
                                 var foundNewSubscription = false
