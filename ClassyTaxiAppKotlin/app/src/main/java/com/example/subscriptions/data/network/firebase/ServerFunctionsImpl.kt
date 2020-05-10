@@ -191,7 +191,7 @@ class ServerFunctionsImpl : ServerFunctions {
     /**
      * Fetches subscription data from the server and posts successful results to [subscriptions].
      * Server info: When you make this call, what happens on server side?
-     * 1. Server verifies authentication to check if the use making this call is signed in.
+     * 1. Server verifies authentication to check if the user making this call is signed in.
      *    if the authentication fails, server throws error: Unauthorised Access.
      * 2. Server queries its database for current subscriptions(purchases).
      * 3. Iterates through every subscription.
@@ -204,7 +204,7 @@ class ServerFunctionsImpl : ServerFunctions {
      *       Medium: https://medium.com/androiddevelopers/implementing-linkedpurchasetoken-correctly-to-prevent-duplicate-subscriptions-82dfbf7167da
      *       More info: https://developers.google.com/android-publisher/api-ref/purchases/subscriptions
      *       SO: https://stackoverflow.com/questions/51808268/google-renewable-subscriptions-abuse
-     *       This situation can abused by the user by offering free subscriptions to other accounts.
+     *       This situation can be abused by the user by offering free subscriptions to other accounts.
      *       So, we need to disable the previous subscription whose purchaseToken is stored in
      *       current subscription's linkedPurchaseToken field. We do this recursively until we find
      *       an empty linkedPurchaseToken field.
@@ -250,7 +250,7 @@ class ServerFunctionsImpl : ServerFunctions {
     }
 
     /**
-     * Register a subscription with the server and posts successful results to [subscriptions].
+     * Registers a subscription with the server and posts successful results to [subscriptions].
      */
     override fun registerSubscription(sku: String, purchaseToken: String) {
         incrementRequestCount()

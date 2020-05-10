@@ -62,6 +62,8 @@ class BillingViewModel(application: Application) : AndroidViewModel(application)
      * then open the deeplink to the specific SKU.
      */
     fun openPlayStoreSubscriptions() {
+        // This can be your flag to know if the user has subscription in single subscription app.
+        // You may wrap it around a LiveData to observe.
         val hasBasic = deviceHasGooglePlaySubscription(purchases.value, Constants.BASIC_SKU)
         val hasPremium = deviceHasGooglePlaySubscription(purchases.value, Constants.PREMIUM_SKU)
         Log.d("Billing", "hasBasic: $hasBasic, hasPremium: $hasPremium")
@@ -86,9 +88,9 @@ class BillingViewModel(application: Application) : AndroidViewModel(application)
      * Open account hold subscription.
      *
      * We need to use the server data to understand account hold.
-     * Most of the other deeplinks are based on the purchase tokens returned on the local device.
+     * Most of the other deep links are based on the purchase tokens returned on the local device.
      * Since the purchase tokens will not be returned when the subscription is in account hold,
-     * we look at the server data to determine the deeplink.
+     * we look at the server data to determine the deep link.
      */
     fun openAccountHoldSubscription() {
         val isPremiumOnServer = serverHasSubscription(subscriptions.value, Constants.PREMIUM_SKU)

@@ -36,9 +36,7 @@ import com.example.subscriptions.SubApp
 import com.example.subscriptions.billing.BillingClientLifecycle
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.android.synthetic.main.activity_main.container
-import kotlinx.android.synthetic.main.activity_main.tabs
-import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 /**
@@ -113,7 +111,7 @@ class MainActivity : AppCompatActivity() {
                 // If the SKU is not specified, just open the Google Play subscriptions URL.
                 Constants.PLAY_STORE_SUBSCRIPTION_URL
             } else {
-                // If the SKU is specified, open the deeplink for this SKU on Google Play.
+                // If the SKU is specified, open the deep link for this SKU on Google Play.
                 String.format(Constants.PLAY_STORE_SUBSCRIPTION_DEEPLINK_URL, sku, packageName)
             }
             val intent = Intent(Intent.ACTION_VIEW)
