@@ -251,6 +251,8 @@ class ServerFunctionsImpl : ServerFunctions {
 
     /**
      * Registers a subscription with the server and posts successful results to [subscriptions].
+     * This method is for brand-new subscription purchases, which have not been registered
+     * to other users before.
      * What happens on the server side?
      * 1. Server verifies authentication to check if the user making this call is signed in.
      *    if the authentication fails, server throws error: Unauthorised Access.
@@ -264,6 +266,7 @@ class ServerFunctionsImpl : ServerFunctions {
      *    error, in both cases.
      * 5. Registers this purchase to this user: That means it adds/updates this purchase token
      *    for this userId to the server database.
+     * 6. Returns all the updated, current subscriptions here.
      */
     override fun registerSubscription(sku: String, purchaseToken: String) {
         incrementRequestCount()
@@ -346,7 +349,18 @@ class ServerFunctionsImpl : ServerFunctions {
 
     /**
      * Transfers a subscription to this account posts successful results to [subscriptions].
-     * What happens on the server side? Similar to the register method above.
+     * This method is for all active subscriptions, no matter if it's registered or not.
+     * What happens on the server side?
+     * 1. Server verifies authentication to check if the user making this call is signed in.
+     *    if the authentication fails, server throws error: Unauthorised Access.
+     * 2. Server queries Google Play Developer API to get the latest status of this purchase.
+     *    If this purchase already exists in the server database, then merges it with purchase
+     *    ownership info stored in the server database.
+     *    Else, it adds the new purchase to server database. While doing this it also checks for
+     *    linkedPurchaseToken(see [updateSubscriptionStatus] method for documentation.
+     * 3. Registers this purchase to this user: That means it adds/updates this purchase token
+     *    for this userId to the server database.
+     * 4. Returns all the updated, current subscriptions here.
      */
     override fun transferSubscription(sku: String, purchaseToken: String) {
         incrementRequestCount()
