@@ -251,6 +251,19 @@ class ServerFunctionsImpl : ServerFunctions {
 
     /**
      * Registers a subscription with the server and posts successful results to [subscriptions].
+     * What happens on the server side?
+     * 1. Server verifies authentication to check if the user making this call is signed in.
+     *    if the authentication fails, server throws error: Unauthorised Access.
+     * 2. Server queries Google Play Developer API to get the latest status of this purchase.
+     *    If this purchase already exists in the server database, then merges it with purchase
+     *    ownership info stored in the server database.
+     *    Else, it adds the new purchase to server database. While doing this it also checks for
+     *    linkedPurchaseToken(see [updateSubscriptionStatus] method for documentation.
+     * 3. It checks whether this purchase is registrable. If not, it throws error: Invalid Token.
+     * 4. Checks whether this purchase is already registered to this user or any user, throws
+     *    error, in both cases.
+     * 5. Registers this purchase to this user: That means it adds/updates this purchase token
+     *    for this userId to the server database.
      */
     override fun registerSubscription(sku: String, purchaseToken: String) {
         incrementRequestCount()
@@ -332,7 +345,8 @@ class ServerFunctionsImpl : ServerFunctions {
     }
 
     /**
-     * Transfer subscription to this account posts successful results to [subscriptions].
+     * Transfers a subscription to this account posts successful results to [subscriptions].
+     * What happens on the server side? Similar to the register method above.
      */
     override fun transferSubscription(sku: String, purchaseToken: String) {
         incrementRequestCount()
