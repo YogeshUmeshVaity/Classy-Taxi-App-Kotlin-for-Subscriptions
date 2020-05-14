@@ -113,6 +113,13 @@ class ServerFunctionsImpl : ServerFunctions {
     /**
      * Fetch basic content and post results to [basicContent].
      * This will fail if the user does not have a basic subscription.
+     * What happens on server side?
+     * 1. Server verifies authentication to check if the user making this call is signed in.
+     *    if the authentication fails, server throws error: Unauthorised Access.
+     * 2. Server queries the Google Play Billing Library for all the current subscriptions for this
+     *    user. If the user doesn't have subscriptions to any of the SKUs, server throws error:
+     *    Valid subscription not found.
+     * 3. After the above checks, server returns the content URL here.
      */
     override fun updateBasicContent() {
         incrementRequestCount()
@@ -152,6 +159,7 @@ class ServerFunctionsImpl : ServerFunctions {
     /**
      * Fetch premium content and post results to [premiumContent].
      * This will fail if the user does not have a premium subscription.
+     * What happens on server side? Same as the updateBasicContent() above.
      */
     override fun updatePremiumContent() {
         incrementRequestCount()
@@ -190,7 +198,7 @@ class ServerFunctionsImpl : ServerFunctions {
 
     /**
      * Fetches subscription data from the server and posts successful results to [subscriptions].
-     * Server info: When you make this call, what happens on server side?
+     * What happens on server side?
      * 1. Server verifies authentication to check if the user making this call is signed in.
      *    if the authentication fails, server throws error: Unauthorised Access.
      * 2. Server queries its database for current subscriptions(purchases).
