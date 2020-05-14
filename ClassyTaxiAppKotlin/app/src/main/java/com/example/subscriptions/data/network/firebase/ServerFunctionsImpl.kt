@@ -401,7 +401,16 @@ class ServerFunctionsImpl : ServerFunctions {
     }
 
     /**
-     * Register Instance ID for Firebase Cloud Messaging.
+     * Registers this device's Instance ID to a user for Firebase Cloud Messaging which is used
+     * to send push notifications to client devices. This method is called when the user
+     * signs-in to a device.
+     * What happens on the server side?
+     * 1. Server verifies authentication to check if the user making this call is signed in.
+     *    If the authentication fails, server throws error: Unauthorised Access.
+     * 2. Server Verifies if the user making this call has a valid instanceId token.
+     *    If there is no instanceId token, server throws error: No instanceId specified.
+     * 3. Server fetches the user document from the database and checks if the instanceId already
+     *    exists, if not it adds it.
      */
     override fun registerInstanceId(instanceId: String) {
         incrementRequestCount()
@@ -420,7 +429,15 @@ class ServerFunctionsImpl : ServerFunctions {
     }
 
     /**
-     * Unregister Instance ID for Firebase Cloud Messaging.
+     * Unregister a device instanceId for a user for Firebase Cloud Messaging. This method is
+     * called when the user signs-out from a device.
+     * What happens on the server side?
+     * 1. Server verifies authentication to check if the user making this call is signed in.
+     *    If the authentication fails, server throws error: Unauthorised Access.
+     * 2. Server Verifies if the user making this call has a valid instanceId token.
+     *    If there is no instanceId token, server throws error: No instanceId specified.
+     * 3. Server fetches the user document from the database and removes the instanceId from the
+     *    user's list of tokens.
      */
     override fun unregisterInstanceId(instanceId: String) {
         incrementRequestCount()
