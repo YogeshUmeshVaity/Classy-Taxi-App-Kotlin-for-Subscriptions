@@ -88,7 +88,7 @@ export default class PurchaseManager {
   /*
    * Query a subscription purchase by its package name, product Id (sku) and purchase token.
    * The method queries Google Play Developer API to get the latest status of the purchase,
-   * then merge it with purchase ownership info stored in the library's managed Firestore database,
+   * then merges it with purchase ownership info stored in the library's managed Firestore database,
    * then returns the merged information as a SubscriptionPurchase to its caller.
    */ 
   querySubscriptionPurchase(packageName: string, sku: string, purchaseToken: string): Promise<SubscriptionPurchase> {
@@ -237,7 +237,7 @@ export default class PurchaseManager {
   }
 
   /*
-   * Force register a purchase to an user.
+   * Force register a purchase to a user.
    * This method is not intended to be called from outside of the library.
    */
   private async forceRegisterToUserAccount(purchaseToken: string, userId: string): Promise<void> {
@@ -253,7 +253,7 @@ export default class PurchaseManager {
 
   /*
    * Register a purchase (both one-time product and recurring subscription) to a user. 
-   * It's intended to be exposed to Android app to verify purchases made in the app
+   * It's intended to be exposed to Android app to verify purchases made in the app.
    */
   async registerToUserAccount(packageName: string, sku: string, purchaseToken: string, skuType: SkuType, userId: string): Promise<void> {
     // STEP 1. Fetch the purchase using Play Developer API and purchase records in Firestore.

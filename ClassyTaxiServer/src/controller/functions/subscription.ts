@@ -58,7 +58,7 @@ export const subscription_register = functions.https.onCall(async (data, context
   return getSubscriptionsResponseObject(context.auth.uid);
 });
 
-/* Register a subscription purchased in Android app via Google Play Billing to an user.
+/* Register a subscription purchased in Android app via Google Play Billing to a user.
  * It only works with all active subscriptions, no matter if it's registered or not.
  */
 export const subscription_transfer = functions.https.onCall(async (data, context) => {
@@ -124,8 +124,8 @@ export const realtime_notification_listener = functions.pubsub.topic('play-subs'
   }
 })
 
-// Util method to get a list of subscriptions belong to a user, in the format that can be returned to client app
-// It also handles library internal error and convert it to an HTTP error to return to client.
+// Util method to get a list of subscriptions that belong to a user, in the format that can be returned to client app
+// It also handles library internal error and converts it to an HTTP error to return to client.
 async function getSubscriptionsResponseObject(userId: string): Promise<Object> {
   try {
     // Fetch purchase list from purchase records
